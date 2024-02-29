@@ -10,6 +10,31 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
+// ABOVE: POSTGRES
+
+import { MongoClient } from 'mongodb';
+
+export async function fetchHorsesPages(query: string) {
+  noStore();
+
+  let mongo = new MongoClient(process.env.MONGODB_URI);
+  await mongo.connect();
+  let collection = await mongo.db(process.env.APP_NAME).collection("Horses");
+  let horses = await collection.find({}).toArray();
+
+  // TODO we're getting all the horses and throwing them away
+  // depending on where we use this function that's a bad plan
+  // TODO horses could be null
+  let count = horses.length;
+
+  // DELETEME
+  console.log("horse count ", count);
+  const totalPages = Math.ceil(Number(count) / ITEMS_PER_PAGE);
+  return totalPages;
+
+}
+
+// BELOW: POSTGRES
 
 export async function fetchRevenue() {
   // Add noStore() here to prevent the response from being cached.
@@ -17,15 +42,7 @@ export async function fetchRevenue() {
   noStore();
 
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-    console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    console.log('Data fetch completed after 3 seconds.');
-
     return data.rows;
   } catch (error) {
     console.error('Database Error:', error);

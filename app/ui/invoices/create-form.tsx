@@ -117,19 +117,19 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                   htmlFor="paid"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Paid <CheckIcon className="h-4 w-4" />
-                </label>
+            Paid <CheckIcon className="h-4 w-4" />
+            </label>
             </div>
-	    	    <div id="status-error" aria-live="polite" aria-atomic="true">
-        {state.errors?.status &&
-          state.errors.status.map((error: string) => (
-            <p className="mt-2 text-sm text-red-500" key={error}>
-		  {error}
-            </p>
-          ))}
-      </div>	    
+	    <div id="status-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.status &&
+             state.errors.status.map((error: string) => (
+		     <p className="mt-2 text-sm text-red-500" key={error}>
+		     {error}
+		 </p>
+             ))}
+	</div>	    
             </div>
-          </div>
+            </div>
         </fieldset>
       </div>
       <div className="mt-6 flex justify-end gap-4">
