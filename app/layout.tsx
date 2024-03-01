@@ -1,3 +1,4 @@
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 import '@/app/ui/global.css';
 import { Metadata } from 'next';
 import { inter } from '@/app/ui/fonts';
