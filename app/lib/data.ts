@@ -17,7 +17,8 @@ import { MongoClient } from 'mongodb';
 export async function fetchHorsesPages(query: string) {
   noStore();
 
-  let mongo = new MongoClient(process.env.MONGODB_URI);
+  let mongo = null;
+  mongo = new MongoClient(process.env.MONGODB_URI);
   await mongo.connect();
   let collection = await mongo.db(process.env.APP_NAME).collection("Horses");
   let horses = await collection.find({}).toArray();
