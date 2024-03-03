@@ -19,7 +19,7 @@ const FormSchema = z.object({
   date: z.string(),
 });
  
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
+const AddHorse = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export type State = {
@@ -31,9 +31,9 @@ export type State = {
     message?: string | null;
 };
  
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function addHorse(prevState: State, formData: FormData) {
   // Validate form using Zod
-  const validatedFields = CreateInvoice.safeParse({
+  const validatedFields = AddHorse.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -43,7 +43,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
+      message: 'Missing Fields. Failed to add horse.',
     };
   }
  
@@ -61,7 +61,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: 'Database Error: Failed to add horse.',
     };
   }
  
