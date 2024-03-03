@@ -9,7 +9,7 @@ export default function Login() {
             <PPPLogo />
           </div>
         </div>
-      <a href="/api/auth/login">Login</a>
+      <a href="/api/auth/login">Sign In</a>
       </div>
     </main>
   )
