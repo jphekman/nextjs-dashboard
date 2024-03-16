@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
- 
+import { Horse } from "./definitions";
+
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string({
@@ -14,69 +15,62 @@ const FormSchema = z.object({
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
   status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+    invalid_type_error: 'Please select an horse status.',
   }),
   date: z.string(),
 });
  
 const AddHorse = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const UpdateHorse = FormSchema.omit({ id: true, date: true });
 
 export type State = {
-    errors?: {
-	customerId?: string[];
-	amount?: string[];
-	status?: string[];
-    };
+    errors?: {};
     message?: string | null;
 };
- 
+
 export async function addHorse(prevState: State, formData: FormData) {
-  // Validate form using Zod
-  const validatedFields = AddHorse.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
+
+  // DELETEME
+  console.log("Adding horse 1");
+
+// TODO validate
+  
+  const horseName = formData.get('horseName');
+  const horseBreed = formData.get('horseBreed');
  
+  // DELETEME
+  console.log("Adding horse 2");
+  
   // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to add horse.',
-    };
-  }
+//  if (!validatedFields.success) {
+    //DELETEME
+  //  console.log("Errors ", validatedFields.error.flatten().fieldErrors);
+    //return {
+      //errors: validatedFields.error.flatten().fieldErrors,
+      //message: 'Missing Fields. Failed to add horse.',
+    //};
+ // }
  
-  // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
- 
-  // Insert data into the database
-  try {
-    await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-    `;
-  } catch (error) {
-    // If a database error occurs, return a more specific error.
-    return {
-      message: 'Database Error: Failed to add horse.',
-    };
-  }
- 
-  // Revalidate the cache for the invoices page and redirect the user.
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  // New Horse model
+  const horse = new Horse({
+    name: horseName,
+    breed: horseBreed
+  });
+
+  // Mongoose save to database
+  await horse.save();
+  
+  // Revalidate the cache for the horses page and redirect the user.
+  revalidatePath('/dashboard/horses');
+  redirect('/dashboard/horses');
 }
 
-export async function updateInvoice(
+export async function updateHorse(
     id: string,
-    prevState: State,
     formData: FormData,
 ) {
   // Validate form using Zod
-  const validatedFields = UpdateInvoice.safeParse({
+  const validatedFields = UpdateHorse.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -85,7 +79,7 @@ export async function updateInvoice(
     if (!validatedFields.success) {
 	return {
 	    errors: validatedFields.error.flatten().fieldErrors,
-	    message: 'Missing Fields. Failed to Update Invoice.',
+	    message: 'Missing Fields. Failed to Update Horse.',
 	};
     }
 
@@ -94,27 +88,27 @@ export async function updateInvoice(
  
     try {
 	await sql`
-      UPDATE invoices
+      UPDATE horses
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
       WHERE id = ${id}
     `;
     } catch (error) {
-	return { message: 'Database Error: Failed to Update Invoice.' };
+	return { message: 'Database Error: Failed to Update Horse.' };
     }
     
-    revalidatePath('/dashboard/invoices');
-    redirect('/dashboard/invoices');
+    revalidatePath('/dashboard/horses');
+    redirect('/dashboard/horses');
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteHorse(id: string) {
 
     try {
-	await sql`DELETE FROM invoices WHERE id = ${id}`;
+	await sql`DELETE FROM horses WHERE id = ${id}`;
     } catch (error) {
 	return {
-	message: 'Failed to delete invoice: ${error}'
+	message: 'Failed to delete horse: ${error}'
 	};
     };
-  revalidatePath('/dashboard/invoices');
+  revalidatePath('/dashboard/horses');
 }
 

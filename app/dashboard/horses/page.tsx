@@ -4,7 +4,7 @@ import Search from '@/app/ui/search';
 import Table from '@/app/ui/horses/table';
 import { AddHorse } from '@/app/ui/horses/buttons';
 import { lusitana } from '@/app/ui/fonts';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+import { HorsesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 
 import { fetchHorsesPages } from '@/app/lib/data';
@@ -34,7 +34,7 @@ export default async function Page({
         <Search placeholder="Search horses..." />
         <AddHorse />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<HorsesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">

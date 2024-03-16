@@ -5,6 +5,8 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'react-bootstrap/Image';
 
+
+// TODO is picture rounded? If not consider re-adding "rounded"
 export default function UserProfile () {
 
   const { user, error, isLoading } = useUser();
@@ -26,7 +28,8 @@ export default function UserProfile () {
 	<div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
 	{user.picture &&
 	 <Image src={user.picture as string}
-	   alt={userName as string} rounded /> }
+	 className="rounded-full"
+	 alt={userName as string} /> }
 	<p className={`${lusitana.className} text-xl text-gray-800 md:text-xl md:leading-normal`}>You are logged in as {user.name} ({user.email})</p>
       </div>
 	</div>

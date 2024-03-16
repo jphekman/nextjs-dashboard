@@ -1,17 +1,14 @@
 import Form from '@/app/ui/horses/edit-form';
 import Breadcrumbs from '@/app/ui/horses/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import { fetchHorseById } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 
  
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
-    const [invoice, customers] = await Promise.all([
-	fetchInvoiceById(id),
-	fetchCustomers(),
-    ]);
+  const horse = await fetchHorseById(id);
 
-    if (!invoice) {
+    if (!horse) {
 	notFound();
     }
 
@@ -19,15 +16,15 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Horses', href: '/dashboard/horses' },
           {
-            label: 'Edit Invoice',
-            href: `/dashboard/invoices/${id}/edit`,
+            label: 'Edit Horse',
+            href: `/dashboard/horses/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Form invoice={invoice} customers={customers} />
+	<Form horse={horse} />
     </main>
   );
 }
