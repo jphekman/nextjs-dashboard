@@ -5,6 +5,8 @@ import {
 } from './definitions';
 import { unstable_noStore as noStore } from 'next/cache';
 
+const ITEMS_PER_PAGE = 6;
+
 export async function fetchHorsesPages(query: string) {
   noStore();
 
@@ -13,8 +15,8 @@ export async function fetchHorsesPages(query: string) {
 
   // TODO get only this user's horses
   // TODO use query
-  // TODO and then we need the math to calculate how many pages
-  return (await Horse.find().countDocuments());
+  let horseCount = await Horse.find().countDocuments();
+  return (Math.ceil(horseCount / ITEMS_PER_PAGE));
 }
 
 // TODO only this user's horses? admin?
