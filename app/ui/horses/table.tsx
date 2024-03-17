@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { UpdateHorse, DeleteHorse } from '@/app/ui/horses/buttons';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredHorses } from '@/app/lib/data';
 
 export default async function HorsesTable({

@@ -1,9 +1,10 @@
-import Form from '@/app/ui/horses/edit-form';
+import EditHorseForm from '@/app/ui/horses/edit-form';
 import Breadcrumbs from '@/app/ui/horses/breadcrumbs';
 import { fetchHorseById } from '@/app/lib/data';
+import { Horse } from "@/app/lib/definitions";
+//import { HorseData } from "@/app/lib/actions";
 import { notFound } from 'next/navigation';
 
- 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
   const horse = await fetchHorseById(id);
@@ -12,6 +13,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 	notFound();
     }
 
+  // Load data from Horse into HorseData
+  // TODO implement - well first try again just passing horse
+  //let horseData : HorseData = { horseName: 'Starbuck', horseBreed: 'Paint'};
+  
     return (
     <main>
       <Breadcrumbs
@@ -24,7 +29,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-	<Form horse={horse} />
+	<EditHorseForm horse={horse} />
     </main>
   );
 }

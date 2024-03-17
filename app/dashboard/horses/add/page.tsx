@@ -1,4 +1,4 @@
-import Form from '@/app/ui/horses/create-form';
+import Form from '@/app/ui/horses/add-form';
 import Breadcrumbs from '@/app/ui/horses/breadcrumbs';
  
 export default async function Page() {
@@ -10,7 +10,7 @@ export default async function Page() {
           { label: 'Horses', href: '/dashboard/horses' },
           {
             label: 'Add Horse',
-            href: '/dashboard/horses/create',
+            href: '/dashboard/horses/add',
             active: true,
           },
         ]}
