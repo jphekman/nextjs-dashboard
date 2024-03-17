@@ -1,3 +1,16 @@
+import { Document } from "mongoose";
+
+/**
+ * Reshapes a set of document to it's object version.
+ * Typically used to convert a MongoDB Document from the server side to "use client" components.
+ * https://stackoverflow.com/questions/77438646/converting-mongo-id-to-serialisable-object-with-nextjs-server-client-components
+ * Surely there is something better.
+ */
+export const toObjects = <T extends Document>(
+  documents: T[],
+): Omit<T, keyof Document>[] =>
+documents.map((document) => document.toObject({ flattenObjectIds: true }));
+
 export const formatDateToLocal = (
   dateStr: string,
   locale: string = 'en-US',

@@ -1,8 +1,7 @@
 import dbConnect from "./dbConnect";
 import { ObjectId } from 'mongodb'; // TODO mongoose?
-import {
-  Horse
-} from './definitions';
+import { Horse } from './definitions';
+import { toObjects } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 const ITEMS_PER_PAGE = 6;
@@ -26,7 +25,10 @@ export async function fetchHorseById(id: string) {
   // TODO there is probably a better place to put this
   await dbConnect();
 
-  return (await Horse.findOne({_id:new ObjectId(id)}));
+  let horse = await Horse.findOne({_id:new ObjectId(id)});
+  return(horse.toObject({ flattenObjectIds: true }));
+
+  //return (await Horse.findOne({_id:new ObjectId(id)}).lean());
 }
 
 // TODO implement
@@ -38,9 +40,9 @@ export async function fetchLatestHorses() {
   await dbConnect();
 
   // TODO get only this user's horses
-  // return (await Horse.find().lean());
-
-  return (await Horse.find().sort("-dateLastEdited").limit(amount));
+  //return (await Horse.find().lean().sort("-dateLastEdited").limit(amount));
+  let horse = await Horse.find().sort("-dateLastEdited").limit(amount);
+  return horse.toObject({ flattenObjectIds: true });
 }
 
 // TODO implement
@@ -56,13 +58,8 @@ export async function fetchFilteredHorses(
 
   // TODO get only this user's horses
   // sort by date,return top X
-  //  return (await Horse.find());
 
-  // let latestHorses: Horse[] = Horse.find();
-  let latestHorses = await Horse.find().sort("-dateLastEdited").exec();
-  console.log("Latest horses: ", latestHorses);
-  //console.log("Count ", Horse.countDocuments());
-  
-  return(latestHorses);
-  
+  // TODO lean doesn't seem to do it
+  return (toObjects( await Horse.find().sort("-dateLastEdited")));
+  //return ( await Horse.find().lean().sort("-dateLastEdited") );
 }

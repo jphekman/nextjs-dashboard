@@ -1,12 +1,10 @@
 'use server';
 
-import { z } from 'zod';
-import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { Horse } from "./definitions";
 
-// TODO can I use Mongoose schema here?
+// TODO can I use Mongoose schema here (and in update)?
 export type HorseData = {
   horseName: string,
   horseBreed: string
@@ -16,28 +14,11 @@ export async function addHorse (
   formData: HorseData
 ) {
 
-  // DELETEME
-  console.log("Adding horse 1");
-
-// TODO validate
+  // TODO validate
   
   const horseName = formData.horseName;
   const horseBreed = formData.horseBreed;
- 
-  // DELETEME
-  console.log("Adding horse 2");
 
-  // TODO how does react-form-hook handle this?
-  // If form validation fails, return errors early. Otherwise, continue.
-//  if (!validatedFields.success) {
-    //DELETEME
-  //  console.log("Errors ", validatedFields.error.flatten().fieldErrors);
-    //return {
-      //errors: validatedFields.error.flatten().fieldErrors,
-      //message: 'Missing Fields. Failed to add horse.',
-    //};
- // }
- 
   // New Horse model
   const horse = new Horse({
     name: horseName,
