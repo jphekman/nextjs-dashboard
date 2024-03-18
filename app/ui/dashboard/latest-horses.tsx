@@ -7,8 +7,8 @@ import { fetchLatestHorses } from '@/app/lib/data';
 
 export default async function LatestHorses() {
 
-  //  const latestHorses: typeof Horse[]= await fetchLatestHorses();
-    const latestHorses = await fetchLatestHorses();
+  const latestHorses : Array<InstanceType<typeof Horse>>
+	= await fetchLatestHorses();
 
   return (
     <div className="flex w-full flex-col md:col-span-4">

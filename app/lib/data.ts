@@ -25,7 +25,7 @@ export async function fetchHorseById(id: string) {
   // TODO there is probably a better place to put this
   await dbConnect();
 
-  let horse = await Horse.findOne({_id:new ObjectId(id)});
+  let horse : InstanceType<typeof Horse> = await Horse.findOne({_id:new ObjectId(id)});
   return(horse.toObject({ flattenObjectIds: true }));
 
   //return (await Horse.findOne({_id:new ObjectId(id)}).lean());
@@ -41,8 +41,7 @@ export async function fetchLatestHorses() {
 
   // TODO get only this user's horses
   //return (await Horse.find().lean().sort("-dateLastEdited").limit(amount));
-  let horse = await Horse.find().sort("-dateLastEdited").limit(amount);
-  return horse.toObject({ flattenObjectIds: true });
+  return (toObjects(await Horse.find().sort("-dateLastEdited").limit(amount)));
 }
 
 // TODO implement

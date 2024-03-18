@@ -4,16 +4,13 @@ import Link from 'next/link';
 import { TagIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { updateHorse, HorseData } from '@/app/lib/actions';
-//import { fetchHorseById } from '@/app/lib/data';
 import { Horse } from '@/app/lib/definitions';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-export default function EditHorseForm( props ) {
+export default function EditHorseForm( horse : InstanceType<typeof Horse> ) {
   const { handleSubmit, register, formState: { isValid, errors } } =
 	useForm<HorseData>({mode: 'onChange'});
 
-  let horse = props.horse; // FIXME not sure why I have to do this
-  
   return (
       <form onSubmit={handleSubmit(async (data) => await updateHorse(horse._id, data))}>
     <div className="rounded-md bg-gray-50 p-4 md:p-6">	     
