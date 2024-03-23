@@ -27,11 +27,10 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search shows..." />
-        <AddHorse />
       </div>
       { /*<Suspense key={query + currentPage} fallback={<HorsesTableSkeleton />}>
 	  <Table query={query} currentPage={currentPage} />
-	  </Suspense> /* }
+	  </Suspense> */ }
       <div className="mt-5 flex w-full justify-center">
           <Pagination totalPages={totalPages} />
       </div>
