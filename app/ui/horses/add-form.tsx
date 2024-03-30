@@ -23,7 +23,7 @@ export default function Form() {
     </label>
       <div className="relative">
       <input
-    { ... register("horseName", {
+    { ... register("name", {
       required: true,
     })}
     type="text"
@@ -35,7 +35,7 @@ export default function Form() {
       </div>
       <div id="name-error" aria-live="polite" aria-atomic="true">
 
-    {errors?.horseName?.type === "required" && 
+    {errors?.name?.type === "required" && 
      <p className="mt-2 text-sm text-red-500">Horse name is required.</p>
     }
     </div>	    
@@ -49,7 +49,7 @@ export default function Form() {
           </label>
           <div className="relative">
             <input
-      { ... register("horseBreed")}
+      { ... register("breed")}
       type="text"
       placeholder="Breed"
         className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"

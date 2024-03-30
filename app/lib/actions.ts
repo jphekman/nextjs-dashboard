@@ -4,29 +4,32 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { Horse } from "./definitions";
 
-// TODO can I use Mongoose schema here (and in update)?
+// TODO move to definitions?
 export type HorseData = {
-  horseName: string,
-  horseBreed: string
+  name: string,
+  breed: string
+  dateLastEdited: Date
 }
 
 export async function addHorse (
   formData: HorseData
 ) {
 
-  // TODO validate
-  
-  const horseName = formData.horseName;
-  const horseBreed = formData.horseBreed;
-
   // New Horse model
+  // TODO can maybe just pass in formData straight + lastEdited
   const horse = new Horse({
-    name: horseName,
-    breed: horseBreed
+    name: formData.name,
+    breed: formData.breed
   });
 
+  // TODO horse.validate()
+  
   // Mongoose save to database
-  await horse.save();
+  try {
+    await horse.save();
+  } catch (e) {
+    throw new Error ("Failed to connect to database.");
+  }
   
   // Revalidate the cache for the horses page and redirect the user.
   revalidatePath('/dashboard/horses');
@@ -38,10 +41,21 @@ export async function updateHorse(
   formData: HorseData
 ) {
 
-// TODO implement
+  formData.dateLastEdited = new Date()
   
-    revalidatePath('/dashboard/horses');
-    redirect('/dashboard/horses');
+  try {
+    let horse = await Horse.findOneAndUpdate(
+      { _id: id}, formData,
+      { runValidators: true, returnOriginal: false}
+    );
+    await horse.save();
+    console.log("Saved changes to ", horse.name, "/", horse.id);
+  } catch (e) {
+    throw new Error ("Failed to save changes to horse " + id);
+  };
+  
+  revalidatePath('/dashboard/horses');
+  redirect('/dashboard/horses');
 }
 
 // TODO implement with Mongoose

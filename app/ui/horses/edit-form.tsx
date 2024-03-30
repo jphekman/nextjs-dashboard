@@ -22,7 +22,7 @@ export default function EditHorseForm( horse : InstanceType<typeof Horse> ) {
 	</label>
 	<div className="relative">
 	  <input
-	    { ... register("horseName", {
+	    { ... register("name", {
 	    required: true,
 	    })}
 	    type="text"
@@ -34,7 +34,7 @@ export default function EditHorseForm( horse : InstanceType<typeof Horse> ) {
 	</div>
 	<div id="name-error" aria-live="polite" aria-atomic="true">
 
-	  {errors?.horseName?.type === "required" && 
+	  {errors?.name?.type === "required" && 
 	  <p className="mt-2 text-sm text-red-500">Horse name is required.</p>}
       </div>	    
       </div>
@@ -47,7 +47,7 @@ export default function EditHorseForm( horse : InstanceType<typeof Horse> ) {
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-		{ ... register("horseBreed")}
+		{ ... register("breed")}
                 type="string"
                 defaultValue={horse.breed}
                 placeholder="Enter breed"
@@ -65,7 +65,7 @@ export default function EditHorseForm( horse : InstanceType<typeof Horse> ) {
           >
           Cancel
         </Link>
-        <Button type="submit">Edit Horse</Button>
+        <Button type="submit">Save Changes</Button>
       </div>
     </div>
   </form>

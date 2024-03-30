@@ -14,6 +14,7 @@ export async function fetchHorsesPages(query: string) {
 
   // TODO get only this user's horses
   // TODO use query
+  // TODO catch failure to connect
   let horseCount = await Horse.find().countDocuments();
   return (Math.ceil(horseCount / ITEMS_PER_PAGE));
 }
@@ -25,6 +26,7 @@ export async function fetchHorseById(id: string) {
   // TODO there is probably a better place to put this
   await dbConnect();
 
+  // TODO catch failure to connect
   let horse : InstanceType<typeof Horse> = await Horse.findOne({_id:new ObjectId(id)});
   return(horse.toObject({ flattenObjectIds: true }));
 
@@ -42,8 +44,6 @@ export async function fetchLatestHorses() {
   // TODO get only this user's horses
   //return (await Horse.find().lean().sort("-dateLastEdited").limit(amount));
   try {
-    // DELETEME
-    throw new Error("Debugging error");
     return (toObjects(await Horse.find().sort("-dateLastEdited").limit(amount)));
   } catch (e) {
     throw new Error ("Unable to connect to database");
@@ -65,6 +65,7 @@ export async function fetchFilteredHorses(
   // sort by date,return top X
 
   // TODO lean doesn't seem to do it
+  // TODO catch failure to connect
   return (toObjects( await Horse.find().sort("-dateLastEdited")));
   //return ( await Horse.find().lean().sort("-dateLastEdited") );
 }
