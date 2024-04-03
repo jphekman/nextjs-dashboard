@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { UpdateHorse, DeleteHorse } from '@/app/ui/horses/buttons';
+import { UpdateHorse, DeleteAlertHorse } from '@/app/ui/horses/buttons';
 import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredHorses } from '@/app/lib/data';
 
@@ -16,32 +16,6 @@ export default async function HorsesTable({
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            {horses?.map((horse) => (
-              <div
-                key={horse._id}
-                className="mb-2 w-full rounded-md bg-white p-4"
-              >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <p>{horse.name}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">{horse.breed}</p>
-                  </div>
-                </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p>{formatDateToLocal(horse.dateCreated)}</p>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateHorse id={horse._id} />
-                    <DeleteHorse id={horse._id} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
@@ -85,7 +59,7 @@ export default async function HorsesTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateHorse id={horse._id} />
-                      <DeleteHorse id={horse._id} />
+                      <DeleteAlertHorse id={horse._id} name={horse.name}/>
                     </div>
                   </td>
                 </tr>

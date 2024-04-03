@@ -1,7 +1,16 @@
+'use client';
+
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteHorse } from '@/app/lib/actions';
 
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export function AddHorse() {
   return (
@@ -26,15 +35,49 @@ export function UpdateHorse({ id }: { id: string }) {
   );
 }
 
-export function DeleteHorse({ id }: { id: string }) {
-  const deleteHorseWithId = deleteHorse.bind(null, id);
- 
+export function DeleteAlertHorse({ id, name } : {id: string, name: string}) {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCloseAndDelete = () => {
+    setOpen(false);
+    deleteHorse(id);
+  };
+
   return (
-    <form action={deleteHorseWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-4" />
-      </button>
-    </form>
+    <React.Fragment>
+      <Button variant="outlined" onClick={handleClickOpen}>
+          <span className="sr-only">Delete</span>
+          <TrashIcon className="w-4" />
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Delete {name}?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+	    This cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCloseAndDelete} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   );
 }

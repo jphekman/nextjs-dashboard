@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { Horse } from "./definitions";
 
-// TODO move to definitions?
+// TODO move into definitions - it has export problems
 export type HorseData = {
   name: string,
   breed: string
@@ -15,19 +15,14 @@ export async function addHorse (
   formData: HorseData
 ) {
 
-  // New Horse model
-  // TODO can maybe just pass in formData straight + lastEdited
-  const horse = new Horse({
-    name: formData.name,
-    breed: formData.breed
-  });
-
-  // TODO horse.validate()
-  
-  // Mongoose save to database
   try {
+    let horse = new Horse(formData);
+    let msg = horse.validateSync();
+    if (typeof msg !== 'undefined') { throw new Error ("Validation error in horse: " + msg); }
     await horse.save();
+    console.log("Added horse", horse.name, new Date());
   } catch (e) {
+    console.log("Error in addHorse:", e)
     throw new Error ("Failed to connect to database.");
   }
   
@@ -40,17 +35,19 @@ export async function updateHorse(
   id: string,
   formData: HorseData
 ) {
-
-  formData.dateLastEdited = new Date()
+  formData.dateLastEdited = new Date();
   
   try {
     let horse = await Horse.findOneAndUpdate(
       { _id: id}, formData,
-      { runValidators: true, returnOriginal: false}
+      { returnOriginal: false}
     );
+    let msg = horse.validateSync();
+    if (typeof msg !== 'undefined') { throw new Error ("Validation error in horse: " + msg); }
     await horse.save();
     console.log("Saved changes to ", horse.name, "/", horse.id);
   } catch (e) {
+    console.log("Error in updateHorse:", id, e)
     throw new Error ("Failed to save changes to horse " + id);
   };
   
@@ -58,10 +55,16 @@ export async function updateHorse(
   redirect('/dashboard/horses');
 }
 
-// TODO implement with Mongoose
 export async function deleteHorse(id: string) {
+   
+  try {
+    await Horse.findOneAndDelete({ _id: id});
+    console.log("Deleted horse", id, new Date());
+  } catch (e) {
+    console.log("Error in deleteHorse:", id, e)
+    throw new Error ("Failed to delete horse " + id);
+  };
 
-  //await sql`DELETE FROM horses WHERE id = ${id}`;
   revalidatePath('/dashboard/horses');
 }
 

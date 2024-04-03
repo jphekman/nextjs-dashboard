@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// TODO can we put HorseData straight into here?
 export const horseSchema = new mongoose.Schema({
   name: {type: String, required: true},
   breed: String,
