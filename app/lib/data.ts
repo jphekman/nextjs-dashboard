@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb'; // TODO mongoose?
 import { Horse } from './definitions';
 import { toObjects } from './utils';
 import { getSession } from '@auth0/nextjs-auth0';
@@ -28,7 +27,7 @@ export async function fetchHorseById(id: string) {
   if (session) {
     let user = session.user;
     try {
-      let horse : InstanceType<typeof Horse> = await Horse.findOne({_id:new ObjectId(id), ownerId:user.sub});
+      let horse : InstanceType<typeof Horse> = await Horse.findOne({_id:id, ownerId:user.sub});
       return(horse.toObject({ flattenObjectIds: true }));
       //return (await Horse.findOne({_id:new ObjectId(id)}).lean());
     } catch (e) {
@@ -44,7 +43,6 @@ export async function fetchLatestHorses() {
   const session = await getSession();
   if (session) {
     let user = session.user;
-    console.log("User:", user.sub);
 
     try {
       return (toObjects(await Horse.find({ownerId:user.sub}).sort("-dateLastEdited").limit(amount)));
@@ -69,9 +67,17 @@ export async function fetchFilteredHorses(
     let user = session.user;
 
     try {
-      return (toObjects( await Horse.find({ownerId:user.sub}).sort("-dateLastEdited")));
-      //return ( await Horse.find().lean().sort("-dateLastEdited") );
+      if (query.length > 0) {
+	return (toObjects( await Horse.find(
+	  { ownerId:user.sub, $or: [{name: new RegExp(query, "i")},
+		  {breed: new RegExp(query, "i")}]})
+			   .sort("-dateLastEdited")));
+      } else {
+	return (toObjects( await Horse.find({ownerId:user.sub}).sort("-dateLastEdited")));
+	//return ( await Horse.find().lean().sort("-dateLastEdited") );
+      }
     } catch (e) {
+      throw(e);
       throw new Error ("Unable to connect to database");
     }
   } else {

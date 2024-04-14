@@ -19,6 +19,9 @@ if (!cached) {
 
 async function dbConnect() {
 
+  // DELETEME
+  console.log("dbConnect");
+  
   if (cached.conn) {
     return cached.conn;
   }

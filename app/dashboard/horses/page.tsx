@@ -26,6 +26,9 @@ export default async function Page({
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchHorsesPages(query);
 
+  // DELETEME
+  console.log("Horses page");
+  
   await dbConnect();
 
   return (
