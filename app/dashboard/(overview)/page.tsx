@@ -1,10 +1,13 @@
-import { lusitana } from '@/app/ui/fonts';
-import { Suspense } from 'react';
+import dbConnect from "@/app/lib/dbConnect";
 import LatestHorses from '@/app/ui/dashboard/latest-horses';
+import { lusitana } from '@/app/ui/fonts';
 import { LatestHorsesSkeleton } from '@/app/ui/skeletons';
+import { Suspense } from 'react';
 
 export default async function Page() {
 
+  await dbConnect();
+  
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>

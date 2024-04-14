@@ -1,7 +1,7 @@
-import dbConnect from "./dbConnect";
 import { ObjectId } from 'mongodb'; // TODO mongoose?
 import { Horse } from './definitions';
 import { toObjects } from './utils';
+import { getSession } from '@auth0/nextjs-auth0';
 import { unstable_noStore as noStore } from 'next/cache';
 
 const ITEMS_PER_PAGE = 6;
@@ -9,48 +9,54 @@ const ITEMS_PER_PAGE = 6;
 export async function fetchHorsesPages(query: string) {
   noStore();
 
-  // TODO there is probably a better place to put this
-  await dbConnect();
-
-  // TODO get only this user's horses
-  // TODO use query
-  // TODO catch failure to connect
-  let horseCount = await Horse.find().countDocuments();
-  return (Math.ceil(horseCount / ITEMS_PER_PAGE));
+  const session = await getSession();
+  if (session) {
+    let user = session.user;
+    try {
+      let horseCount = await Horse.find({ownerId:user.sub}).countDocuments();
+      return (Math.ceil(horseCount / ITEMS_PER_PAGE));
+    } catch (e) {
+      throw new Error ("Unable to connect to database");
+    }
+  } else { throw new Error ("Session undefined."); }
 }
 
-// TODO only this user's horses? admin?
 export async function fetchHorseById(id: string) {
   noStore();
 
-  // TODO there is probably a better place to put this
-  await dbConnect();
-
-  // TODO catch failure to connect
-  let horse : InstanceType<typeof Horse> = await Horse.findOne({_id:new ObjectId(id)});
-  return(horse.toObject({ flattenObjectIds: true }));
-
-  //return (await Horse.findOne({_id:new ObjectId(id)}).lean());
+  const session = await getSession();
+  if (session) {
+    let user = session.user;
+    try {
+      let horse : InstanceType<typeof Horse> = await Horse.findOne({_id:new ObjectId(id), ownerId:user.sub});
+      return(horse.toObject({ flattenObjectIds: true }));
+      //return (await Horse.findOne({_id:new ObjectId(id)}).lean());
+    } catch (e) {
+      throw new Error ("Unable to connect to database");
+    }
+  } else { throw new Error ("Session undefined."); }
 }
 
-// TODO implement
 export async function fetchLatestHorses() {
   noStore();
   const amount = 10;
 
-  // TODO there is probably a better place to put this
-  await dbConnect();
+  const session = await getSession();
+  if (session) {
+    let user = session.user;
+    console.log("User:", user.sub);
 
-  // TODO get only this user's horses
-  //return (await Horse.find().lean().sort("-dateLastEdited").limit(amount));
-  try {
-    return (toObjects(await Horse.find().sort("-dateLastEdited").limit(amount)));
-  } catch (e) {
-    throw new Error ("Unable to connect to database");
+    try {
+      return (toObjects(await Horse.find({ownerId:user.sub}).sort("-dateLastEdited").limit(amount)));
+      //return (await Horse.find().lean().sort("-dateLastEdited").limit(amount));
+    } catch (e) {
+      throw new Error ("Unable to connect to database");
+    }
+  } else {
+    throw new Error ("Session undefined.");
   }
 }
 
-// TODO implement
 export async function fetchFilteredHorses(
   query: string,
   currentPage: number,
@@ -58,14 +64,17 @@ export async function fetchFilteredHorses(
 
   noStore();
 
-  // TODO there is probably a better place to put this
-  await dbConnect();
+  const session = await getSession();
+  if (session) {
+    let user = session.user;
 
-  // TODO get only this user's horses
-  // sort by date,return top X
-
-  // TODO lean doesn't seem to do it
-  // TODO catch failure to connect
-  return (toObjects( await Horse.find().sort("-dateLastEdited")));
-  //return ( await Horse.find().lean().sort("-dateLastEdited") );
+    try {
+      return (toObjects( await Horse.find({ownerId:user.sub}).sort("-dateLastEdited")));
+      //return ( await Horse.find().lean().sort("-dateLastEdited") );
+    } catch (e) {
+      throw new Error ("Unable to connect to database");
+    }
+  } else {
+    throw new Error ("Session undefined.");
+  }
 }

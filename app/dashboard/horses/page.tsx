@@ -1,10 +1,11 @@
-import { Metadata } from 'next';
+import dbConnect from "@/app/lib/dbConnect";
 import Pagination from '@/app/ui/horses/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/horses/table';
 import { AddHorse } from '@/app/ui/horses/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { HorsesTableSkeleton } from '@/app/ui/skeletons';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import { fetchHorsesPages } from '@/app/lib/data';
@@ -21,9 +22,11 @@ export default async function Page({
 	page?: string;
     };
 }) {
-    const query = searchParams?.query || '';
-    const currentPage = Number(searchParams?.page) || 1;
-    const totalPages = await fetchHorsesPages(query);
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = await fetchHorsesPages(query);
+
+  await dbConnect();
 
   return (
     <div className="w-full">

@@ -1,7 +1,8 @@
-import EditHorseForm from '@/app/ui/horses/edit-form';
-import Breadcrumbs from '@/app/ui/horses/breadcrumbs';
+import dbConnect from "@/app/lib/dbConnect";
 import { fetchHorseById } from '@/app/lib/data';
 import { Horse } from "@/app/lib/definitions";
+import EditHorseForm from '@/app/ui/horses/edit-form';
+import Breadcrumbs from '@/app/ui/horses/breadcrumbs';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -11,6 +12,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!horse) {
     notFound();
   }
+
+  await dbConnect();
 
   return (
       <main>
