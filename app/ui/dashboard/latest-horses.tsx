@@ -37,11 +37,8 @@ export default async function LatestHorses() {
                     height={32}
                     /> */ }
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold md:text-base">
-                      {horse.name}
-                    </p>
-                    <p className="hidden text-sm text-gray-500 sm:block">
-                      {horse.email}
+                    <p className="truncate text-sm md:text-base">
+                {horse.name} - {horse.breed}
                     </p>
                   </div>
                 </div>
